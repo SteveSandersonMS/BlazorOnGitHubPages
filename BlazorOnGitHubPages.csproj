@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
-
+	<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <!-- To make the application smaller, we can explicitly turn off timezone and collation support. -->
     <!-- Normally the linker automatically strips any features we aren't using, but these two otherwise stay on by default. -->
     <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
@@ -11,10 +11,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\service-worker.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\service-worker.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0-rc1.20223.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0-rc1.20223.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.0-rc1.20223.4" PrivateAssets="all" />
-    <PackageReference Include="System.Net.Http.Json" Version="3.2.0-rc1.20217.1" />
+	<PackageReference Include="Syncfusion.XlsIO.Net.Core" Version="18.2.0.46" />
+	<PackageReference Include="System.Net.Http.Json" Version="3.2.0-rc1.20217.1" />
   </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BlazorInputFile" Version="0.1.0-preview" />
+	</ItemGroup>
 
 </Project>

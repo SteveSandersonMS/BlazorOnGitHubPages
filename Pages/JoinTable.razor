@@ -1,0 +1,90 @@
+﻿@page "/jointable"
+@using System.IO;
+@using BlazorOnGitHubPages;
+@inject BlazorOnGitHubPages.Data.MergeService service
+@inject Microsoft.JSInterop.IJSRuntime JS
+
+
+
+@if (null == xlsStatus || null == csvStatus)
+{
+    <h3>Upload Original xls file and generated csv file from Jitter cloud</h3>
+    @if (null == csvStatus)
+    {
+        <p>Upload Csv file</p>
+        <InputFile OnChange="HandleCsvSelection" />
+    }
+    else
+    {
+        <p>@csvStatus</p>
+    }
+
+    @if (null == xlsStatus)
+    {
+        <p>Upload Xls file</p>
+        <InputFile OnChange="HandleXlsSelection" />
+    }
+    else
+    {
+        <p>@xlsStatus</p>
+    }
+
+}
+
+
+else
+{
+    <p>@xlsStatus</p>
+    <p>@csvStatus</p>
+    <h5>Two files are uploaded</h5>
+    <button class="btn btn-primary" @onclick="@mergeDocument">Download Modified Document</button>
+}
+
+
+
+
+@code {
+    string csvStatus, xlsStatus;
+    MemoryStream csvStream, xlsStream;
+
+    async Task HandleCsvSelection(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            // Just load into .NET memory to show it can be done
+            // Alternatively it could be saved to disk, or parsed in memory, or similar
+            csvStream = new MemoryStream();
+            await file.Data.CopyToAsync(csvStream);
+
+            //outputStream = service.CreateExcel(ms, file.Name);
+            //csvStream = service.MergeExcel(ms, file.Name);
+
+            csvStatus = $"Finished loading Csv : {file.Name}";
+        }
+    }
+
+    async Task HandleXlsSelection(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            // Just load into .NET memory to show it can be done
+            // Alternatively it could be saved to disk, or parsed in memory, or similar
+            xlsStream = new MemoryStream();
+            await file.Data.CopyToAsync(xlsStream);
+
+            //outputStream = service.CreateExcel(ms, file.Name);
+            //xlsStream = service.MergeExcel(ms, file.Name);
+
+            xlsStatus = $"Finished loading Xlsx : {file.Name}";
+        }
+    }
+
+    protected async void mergeDocument()
+    {
+        //outputStream = service.CreateExcel(inputStream, fName);
+        var outputStream = service.MergeExcel(csvStream, xlsStream);
+        await JS.SaveAs("Output.xlsx", outputStream.ToArray());
+    }
+}
